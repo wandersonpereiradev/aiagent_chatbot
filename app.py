@@ -43,3 +43,15 @@ def extract_text_pdf(file_path):
   doc = loader.load()
   content = "\n".join([page.page_content for page in doc])
   return content
+
+### Indexação e recuperação
+def config_retriever(folder_path="content"):
+  # Carregar documentos
+  docs_path = Path("content")
+  pdf_files = [f for f in docs_path.glob("*.pdf")]
+
+  if len(pdf_files) < 1:
+    st.error("Nenhum arquivo PDF carregado")
+    st.stop()
+
+  loaded_documents = [extract_text_pdf(pdf) for pdf in pdf_files]
