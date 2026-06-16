@@ -72,3 +72,13 @@ def config_retriever(folder_path="content"):
 
   # Armazenamento
   vectorstore = FAISS.from_texts(chunks, embedding=embeddings)
+
+  vectorstore.save_local('index_faiss')
+
+  # Configurando o recuperador de texto / Retriever
+  retriever = vectorstore.as_retriever(
+      search_type='mmr',
+      search_kwargs={'k':3, 'fetch_k':4}
+  )
+
+  return retriever
