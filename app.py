@@ -36,3 +36,10 @@ def show_res(res):
   else:
     res = res.strip()  # fallback se não houver tag
   display(Markdown(res))
+
+  ### Extração do conteúdo
+def extract_text_pdf(file_path):
+  loader = PyMuPDFLoader(file_path)
+  doc = loader.load()
+  content = "\n".join([page.page_content for page in doc])
+  return content
