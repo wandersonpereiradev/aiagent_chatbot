@@ -82,3 +82,24 @@ def config_retriever(folder_path="content"):
   )
 
   return retriever
+
+### Chain da RAG
+def config_rag_chain(llm, retriever):
+
+  # Prompt de contextualização
+  context_q_system_prompt = "Given the following chat history and the follow-up question which might reference context in the chat history, formulate a standalone question which can be understood without the chat history. Do NOT answer the question, just reformulate it if needed and otherwise return it as is."
+
+  context_q_system_prompt = context_q_system_prompt
+  context_q_user_prompt = "Question: {input}"
+  context_q_prompt = ChatPromptTemplate.from_messages(
+      [
+          ("system", context_q_system_prompt),
+          MessagesPlaceholder("chat_history"),
+          ("human", context_q_user_prompt),
+      ]
+  )
+
+  # Chain para contextualização
+  history_aware_retriever = create_history_aware_retriever(
+    llm=llm, retriever=retriever, prompt=context_q_prompt
+  )
