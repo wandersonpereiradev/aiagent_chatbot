@@ -103,3 +103,29 @@ def config_rag_chain(llm, retriever):
   history_aware_retriever = create_history_aware_retriever(
     llm=llm, retriever=retriever, prompt=context_q_prompt
   )
+
+# Prompt para perguntas e respostas (Q&A)
+  system_prompt = """Você é um assistente virtual prestativo e está respondendo perguntas gerais sobre os serviços de uma empresa.
+  Use os seguintes pedaços de contexto recuperado para responder à pergunta.
+  Se você não sabe a resposta, apenas comente que não sabe dizer com certeza.
+  Mas caso seja uma dúvida muito comum, pode sugerir como alternativa uma solução possível.
+  Mantenha a resposta concisa.
+  Responda em português. \n\n"""
+
+  qa_prompt = ChatPromptTemplate.from_messages([
+    ("system", system_prompt),
+    MessagesPlaceholder("chat_history"),
+    ("human", "Pergunta: {input}\n\n Contexto: {context}"),
+  ])
+
+  # Configurar LLM e Chain para perguntas e respostas (Q&A)
+
+  qa_chain = create_stuff_documents_chain(llm, qa_prompt)
+
+  rag_chain = create_retrieval_chain(
+    history_aware_retriever,
+    qa_chain,
+  )
+
+  return rag_chain
+
