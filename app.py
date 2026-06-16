@@ -27,3 +27,12 @@ def load_llm(id_model, temperature):
   return llm
 
 llm = load_llm(id_model, temperature)
+
+### Exibição do resultado
+def show_res(res):
+  from IPython.display import Markdown
+  if "</think>" in res:
+    res = res.split("</think>")[-1].strip()
+  else:
+    res = res.strip()  # fallback se não houver tag
+  display(Markdown(res))
