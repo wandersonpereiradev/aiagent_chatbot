@@ -64,3 +64,11 @@ def config_retriever(folder_path="content"):
   chunks = []
   for doc in loaded_documents:
       chunks.extend(text_splitter.split_text(doc))
+
+  # Embeddings
+  embedding_model = "BAAI/bge-m3" #sentence-transformers/all-mpnet-base-v2
+
+  embeddings = HuggingFaceEmbeddings(model_name=embedding_model)
+
+  # Armazenamento
+  vectorstore = FAISS.from_texts(chunks, embedding=embeddings)
