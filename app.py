@@ -55,3 +55,12 @@ def config_retriever(folder_path="content"):
     st.stop()
 
   loaded_documents = [extract_text_pdf(pdf) for pdf in pdf_files]
+
+   # Divisão em pedaços de texto / Split
+  text_splitter = RecursiveCharacterTextSplitter(
+      chunk_size=1000,
+      chunk_overlap=200
+  )
+  chunks = []
+  for doc in loaded_documents:
+      chunks.extend(text_splitter.split_text(doc))
