@@ -146,15 +146,27 @@ def chat_llm(rag_chain, input):
 
   return res
 
+if "chat_started" not in st.session_state:
+    st.session_state.chat_started = False
+ 
+if "retriever" not in st.session_state:
+  st.session_state.retriever = None
+ 
+if not st.session_state.chat_started:
+    st.markdown("Clique abaixo para iniciar o atendimento:")
+    if st.button("Iniciar atendimento"):
+        with st.spinner("Aguarde enquanto te transferimos para um atendente..."):
+            st.session_state.retriever = config_retriever(path)
+            st.session_state.chat_started = True
+            st.rerun()
+    st.stop()
+
 input = st.chat_input("Digite sua mensagem aqui...")
 
 if "chat_history" not in st.session_state:
   st.session_state.chat_history = [
       AIMessage(content = "Olá, sou o seu assistente virtual! Como posso te ajudar?"),
   ]
-
-if "retriever" not in st.session_state:
-  st.session_state.retriever = None
 
 for message in st.session_state.chat_history:
   if isinstance(message, AIMessage):
@@ -174,4 +186,3 @@ if input is not None:
     rag_chain = config_rag_chain(llm, st.session_state.retriever)
     res = chat_llm(rag_chain, input)
     st.write(res)
-    
